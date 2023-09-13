@@ -14,7 +14,7 @@
 
 syntax = "proto3";
 
-option go_package = "example.com/project/protos/fizz";
+option go_package = "github.com/seed4407/Tarea_Distribuidos";
 option java_multiple_files = true;
 option java_package = "io.grpc.examples.helloworld";
 option java_outer_classname = "HelloWorldProto";
