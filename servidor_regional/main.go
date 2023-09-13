@@ -27,7 +27,7 @@ import (
 	"net"
 
 	"google.golang.org/grpc"
-	pb "github.com/seed4407/Tarea_Distribuidos"
+	pb "github.com/seed4407/Tarea_Distribuidos/proto"
 )
 
 var (
@@ -40,7 +40,7 @@ type server struct {
 }
 
 func (s *server) CuposDisponibles(ctx context.Context, in *pb.Cupo) (*pb.Recepcion, error) {
-	log.Printf(in.GetCupo())
+	log.Printf(in.GetCupos())
 	return &pb.Recepcion{Ok:"ok "}, nil
 }
 

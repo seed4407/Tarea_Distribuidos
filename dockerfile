@@ -14,17 +14,17 @@ RUN go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.28
 RUN go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.2
 RUN export PATH="$PATH:$(go env GOPATH)/bin"
 
-RUN protoc --go_out=./proto --go_opt=paths=import \ 
+RUN protoc --go_out=./proto --go_opt=paths=import \
 --go-grpc_out=./proto --go-grpc_opt=paths=import \
  ./proto/*.proto
 
+
+WORKDIR /app/servidor_regional
+
 RUN go build -o bin .
+
+WORKDIR /app
 
 RUN go get github.com/rabbitmq/amqp091-go
 
-# RUN protoc --go_out=./proto ./proto/*.proto
-
-# RUN go run server_regional.go
-# RUN go run server_central.go
-
-ENTRYPOINT [ "/app/bin" ]
+ENTRYPOINT [ "/app/servidor_regional/bin"]
