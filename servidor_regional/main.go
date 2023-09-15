@@ -24,7 +24,8 @@ import (
 	"flag"
 	"fmt"
 	"log"
-	"net"
+	"net" 
+    "os"
 
 	"google.golang.org/grpc"
 	pb "github.com/seed4407/Tarea_Distribuidos/proto"
@@ -50,8 +51,27 @@ func (s *server) CuposRechazados(ctx context.Context, in *pb.Rechazado) (*pb.Rec
 }
 
 func main() {
-	flag.Parse()
-	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", *port))
+    // Abrir el archivo en modo lectura
+    archivo, err := os.Open("./servidor_regional/parametros_de_inicio.txt")
+    if err != nil {
+        fmt.Println("Error al abrir el archivo:", err)
+        return
+    }
+    defer archivo.Close()
+
+    // Leer el contenido del archivo
+    buffer := make([]byte, 1024)
+    for {
+        n, err := archivo.Read(buffer)
+        if err != nil {
+            break
+        }
+        fmt.Print(string(buffer[:n]))
+    }
+
+	newIP := "173.20.0.1"
+	
+	lis, err := net.Listen("tcp", fmt.Sprintf("%s:%d",newIP,*port))
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
