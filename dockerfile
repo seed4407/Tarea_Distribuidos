@@ -6,6 +6,7 @@ COPY go.mod .
 COPY servidor_regional ./servidor_regional
 COPY proto ./proto
 
+EXPOSE 50051
 RUN apt-get update
 RUN export PATH=$PATH:/usr/local/go/bin
 RUN apt-get install -y protobuf-compiler
