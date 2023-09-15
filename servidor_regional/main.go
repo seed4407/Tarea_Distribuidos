@@ -69,9 +69,8 @@ func main() {
         fmt.Print(string(buffer[:n]))
     }
 
-	newIP := "173.20.0.1"
-	
-	lis, err := net.Listen("tcp", fmt.Sprintf("%s:%d",newIP,*port))
+
+	lis, err := net.Listen("tcp", fmt.Sprintf(":%d",*port))
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
