@@ -41,6 +41,7 @@ var datos_cupos int
 var err error
 var datos_rechazados int 
 var valor_inicial int
+var valor_modificado int
 var numeroAleatorio int
 // server is used to implement helloworld.GreeterServer.
 type server struct {
@@ -52,6 +53,9 @@ func (s *server) CuposDisponibles(ctx context.Context, in *pb.Cupo) (*pb.Recepci
 	if err != nil {
         log.Printf("Error %v\n", err)
     }
+	if valor_modificado != -1{
+		valor_inicial := valor_modificado
+	}
 	limite_inferior := (valor_inicial/2) - (valor_inicial/5)
 	limite_superior := (valor_inicial/2) + (valor_inicial/5)
 	numeroAleatorio := rand.Intn(limite_superior-limite_inferior+1) + limite_inferior
@@ -69,9 +73,9 @@ func (s *server) CuposRechazados(ctx context.Context, in *pb.Rechazado) (*pb.Rec
 	if err != nil {
         log.Printf("Error %v\n", err)
     }
-	valor_inicial := valor_inicial - (numeroAleatorio -  datos_rechazados)
+	valor_modificado := valor_inicial - (numeroAleatorio -  datos_rechazados)
 	log.Printf("%d",datos_rechazados)
-	log.Printf("%d",valor_inicial)
+	log.Printf("%d",valor_modificado)
 	log.Printf(in.GetRechazados())
 	return &pb.Recepcion{Ok:"ok"}, nil
 }
@@ -87,8 +91,8 @@ func main() {
         fmt.Printf("Error al leer el archivo: %v\n", err)
         return
     }
-	valor_inicial,err = strconv.Atoi(string(contenido)) -1
-
+	valor_inicial,err := strconv.Atoi(string(contenido))
+	valor_modificado := -1
 	lis, err := net.Listen("tcp", fmt.Sprintf(":%d",*port))
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
