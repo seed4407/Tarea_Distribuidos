@@ -59,6 +59,7 @@ func (s *server) CuposDisponibles(ctx context.Context, in *pb.Cupo) (*pb.Recepci
 	limite_inferior := (valor_inicial/2) - (valor_inicial/5)
 	limite_superior := (valor_inicial/2) + (valor_inicial/5)
 	numeroAleatorio := rand.Intn(limite_superior-limite_inferior+1) + limite_inferior
+	log.Printf("%d",valor_inicial)
 	log.Printf("%d",datos_cupos)
 	log.Printf("%d",limite_inferior)
 	log.Printf("%d",limite_superior)
@@ -91,8 +92,13 @@ func main() {
         fmt.Printf("Error al leer el archivo: %v\n", err)
         return
     }
+
 	valor_inicial,err := strconv.Atoi(string(contenido))
 	valor_modificado := -1
+
+	if valor_inicial >= 0 && valor_modificado == -1 {
+		log.Printf("Inicio exitoso")
+	}
 	lis, err := net.Listen("tcp", fmt.Sprintf(":%d",*port))
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
