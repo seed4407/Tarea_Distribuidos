@@ -87,7 +87,7 @@ func main() {
         fmt.Printf("Error al leer el archivo: %v\n", err)
         return
     }
-	valor_inicial,err = strconv.Atoi(string(contenido))
+	valor_inicial,err = strconv.Atoi(string(contenido)) -1
 
 	lis, err := net.Listen("tcp", fmt.Sprintf(":%d",*port))
 	if err != nil {
