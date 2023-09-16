@@ -63,6 +63,8 @@ func (s *server) CuposDisponibles(ctx context.Context, in *pb.Cupo) (*pb.Recepci
 	limite_superior = (valor_modificado/2) + (valor_modificado/5)
 	if(valor_modificado == 0) {
 		numeroAleatorio = 0
+	} else if valor_modificado == 1{
+		numeroAleatorio = 1
 	} else {
 		numeroAleatorio = rand.Intn(limite_superior-limite_inferior+1) + limite_inferior
 	}
@@ -81,7 +83,7 @@ func (s *server) CuposRechazados(ctx context.Context, in *pb.Rechazado) (*pb.Rec
 
 	log.Printf("Se inscribieron %d personas",numeroAleatorio -  datos_rechazados)
 	log.Printf("Quedan %d personas en espera de cupo",valor_inicial)
-	
+
 	return &pb.Recepcion{Ok:"ok"}, nil
 }
 
