@@ -31,6 +31,7 @@ import (
 	"strconv"
 	"google.golang.org/grpc"
 	pb "github.com/seed4407/Tarea_Distribuidos/proto"
+	"github.com/streadway/amqp"
 )
 
 var (
@@ -45,6 +46,8 @@ var valor_modificado int
 var numeroAleatorio int
 var limite_inferior int
 var limite_superior int
+var ch *amqp.Channel
+
 // server is used to implement helloworld.GreeterServer.
 type server struct {
 	pb.UnimplementedServidorRegionalServer
@@ -65,7 +68,25 @@ func (s *server) CuposDisponibles(ctx context.Context, in *pb.Cupo) (*pb.Recepci
 	log.Printf("%d",limite_inferior)
 	log.Printf("%d",limite_superior)
 	log.Printf("%d",numeroAleatorio)
-	//enviar a cola asincrona
+
+    serverID := "server-1"
+
+	message := "Mensaje a cola rabbit"
+
+    err = ch.Publish(
+        "",     // Exchange
+        "centralQueue", // Nombre de la cola
+        false,  // Mandatory
+        false,  // Immediate
+        amqp.Publishing{
+            ContentType: "text/plain",
+            Body:        []byte(message),
+            Headers:     amqp.Table{"server_id": serverID},
+        })
+    if err != nil {
+        log.Fatalf("No se pudo publicar el mensaje: %v", err)
+    }
+
 	log.Printf(in.GetCupos())
 	return &pb.Recepcion{Ok:"ok "}, nil
 }
@@ -96,9 +117,25 @@ func main() {
 
 	valor_inicial,err = strconv.Atoi(string(contenido))
 
+	conn, err := amqp.Dial("amqp://guest:guest@10.6.46.109:5672/")
+    if err != nil {
+        log.Fatalf("No se pudo conectar a RabbitMQ: %v", err)
+    }
+    defer conn.Close()
+
+    ch, err := conn.Channel()
+    if err != nil {
+        log.Fatalf("No se pudo abrir un canal: %v", err)
+    }
+    defer ch.Close()
+
+    // Debugger
+    fmt.Println("Conexión exitosa a RabbitMQ")
+
 	if valor_inicial >= 0{
 		log.Printf("Inicio exitoso")
 	}
+
 	lis, err := net.Listen("tcp", fmt.Sprintf(":%d",*port))
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)

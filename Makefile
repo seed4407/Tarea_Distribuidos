@@ -1,6 +1,6 @@
 # Variables
-IMAGE_NAME = go-containerized:latest
-CONTAINER_NAME = go-containerized:latest
+IMAGE_NAME = region
+CONTAINER_NAME = region
 DOCKERFILE = Dockerfile
 
 # Comandos
