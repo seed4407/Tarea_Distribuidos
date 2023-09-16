@@ -5,15 +5,15 @@ DOCKERFILE = Dockerfile
 
 # Comandos
 build:
-	docker build -t $(IMAGE_NAME) -f $(DOCKERFILE) .
+	sudo docker build -t $(IMAGE_NAME) -f $(DOCKERFILE) .
 
 docker-regional:
-	docker run -p 8080:80 $(CONTAINER_NAME)
+	sudo docker run -p 8080:80 $(CONTAINER_NAME)
 stop:
-	docker stop $(CONTAINER_NAME)
+	sudo docker stop $(CONTAINER_NAME)
 rm:
-	docker rm $(CONTAINER_NAME)
-clean:	stop rm
-	docker rmi $(IMAGE_NAME)
+	sudo docker rm $(CONTAINER_NAME)
+clean:	sudo stop rm
+	sudo docker rmi $(IMAGE_NAME)
 logs:
-	docker logs -f $(CONTAINER_NAME)
+	sudo docker logs -f $(CONTAINER_NAME)
