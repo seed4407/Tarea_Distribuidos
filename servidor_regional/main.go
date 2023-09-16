@@ -70,26 +70,6 @@ func (s *server) CuposDisponibles(ctx context.Context, in *pb.Cupo) (*pb.Recepci
 	
 	serverID := "server-1"
 
-    // Mensaje a enviar
-    message := "Mensaje guardado en cola"
-
-    err = ch.Publish(
-        "",     // Exchange
-        "centralQueue", // Nombre de la cola
-        false,  // Mandatory
-        false,  // Immediate
-        amqp.Publishing{
-            ContentType: "text/plain",
-            Body:        []byte(message),
-            Headers:     amqp.Table{"server_id": serverID},
-        })
-    if err != nil {
-        log.Fatalf("No se pudo publicar el mensaje: %v", err)
-    }
-
-    // Debugger
-    fmt.Println("Mensaje publicado exitosamente en la cola 'central-queue'")
-
 	log.Printf(in.GetCupos())
 	return &pb.Recepcion{Ok:"ok "}, nil
 }
@@ -138,6 +118,26 @@ func main() {
 
     // Debugger
     fmt.Println("Conexión exitosa a RabbitMQ")
+
+	    // Mensaje a enviar
+    message := "Mensaje guardado en cola"
+
+    err = ch.Publish(
+        "",     // Exchange
+        "centralQueue", // Nombre de la cola
+        false,  // Mandatory
+        false,  // Immediate
+        amqp.Publishing{
+            ContentType: "text/plain",
+            Body:        []byte(message),
+            Headers:     amqp.Table{"server_id": serverID},
+        })
+    if err != nil {
+        log.Fatalf("No se pudo publicar el mensaje: %v", err)
+    }
+
+    // Debugger
+    fmt.Println("Mensaje publicado exitosamente en la cola 'central-queue'")
 	
 	lis, err := net.Listen("tcp", fmt.Sprintf(":%d",*port))
 	if err != nil {
