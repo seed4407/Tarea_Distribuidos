@@ -61,8 +61,11 @@ func (s *server) CuposDisponibles(ctx context.Context, in *pb.Cupo) (*pb.Recepci
 	valor_modificado = valor_inicial
 	limite_inferior = (valor_modificado/2) - (valor_modificado/5)
 	limite_superior = (valor_modificado/2) + (valor_modificado/5)
-	numeroAleatorio = rand.Intn(limite_superior-limite_inferior+1) + limite_inferior
-
+	if(valor_modificado == 0) {
+		numeroAleatorio = 0
+	} else {
+		numeroAleatorio = rand.Intn(limite_superior-limite_inferior+1) + limite_inferior
+	}
 	log.Printf("Hay %d personas interesadas en acceder a la beta",numeroAleatorio)
 	aux = strconv.Itoa(numeroAleatorio)
 
@@ -75,13 +78,10 @@ func (s *server) CuposRechazados(ctx context.Context, in *pb.Rechazado) (*pb.Rec
         log.Printf("Error %v\n", err)
     }
 	valor_inicial = valor_inicial - (numeroAleatorio -  datos_rechazados)
-	if valor_inicial - (numeroAleatorio -  datos_rechazados) <= 0 {
-		log.Printf("Se inscribieron %d personas",numeroAleatorio -  datos_rechazados)
-	    log.Printf("Quedan %d personas en espera de cupo",0)
-	} else {
-		log.Printf("Se inscribieron %d personas",numeroAleatorio -  datos_rechazados)
-		log.Printf("Quedan %d personas en espera de cupo",valor_inicial)
-	}
+
+	log.Printf("Se inscribieron %d personas",numeroAleatorio -  datos_rechazados)
+	log.Printf("Quedan %d personas en espera de cupo",valor_inicial)
+	
 	return &pb.Recepcion{Ok:"ok"}, nil
 }
 
