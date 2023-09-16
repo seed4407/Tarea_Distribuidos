@@ -124,7 +124,7 @@ func main() {
 		log.Printf("Inicio exitoso")
 	}
 
-	conn, err := amqp.Dial("amqp://guest:guest@10.6.46.109:5672/")
+	conn, err := amqp.Dial("amqp://guest:guest@10.6.46.109:8082/")
     if err != nil {
         log.Fatalf("No se pudo conectar a RabbitMQ: %v", err)
     }
