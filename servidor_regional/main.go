@@ -75,8 +75,13 @@ func (s *server) CuposRechazados(ctx context.Context, in *pb.Rechazado) (*pb.Rec
         log.Printf("Error %v\n", err)
     }
 	valor_inicial = valor_inicial - (numeroAleatorio -  datos_rechazados)
-	log.Printf("Se inscribieron %d personas",numeroAleatorio -  datos_rechazados)
-	log.Printf("Quedan %d personas en espera de cupo",valor_inicial)
+	if valor_inicial - (numeroAleatorio -  datos_rechazados) <= 0 {
+		log.Printf("Se inscribieron %d personas",numeroAleatorio -  datos_rechazados)
+	    log.Printf("Quedan %d personas en espera de cupo",0)
+	} else {
+		log.Printf("Se inscribieron %d personas",numeroAleatorio -  datos_rechazados)
+		log.Printf("Quedan %d personas en espera de cupo",valor_inicial)
+	}
 	return &pb.Recepcion{Ok:"ok"}, nil
 }
 
