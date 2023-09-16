@@ -43,6 +43,8 @@ var datos_rechazados int
 var valor_inicial int
 var valor_modificado int
 var numeroAleatorio int
+var limite_inferior int
+var limite_superior int
 // server is used to implement helloworld.GreeterServer.
 type server struct {
 	pb.UnimplementedServidorRegionalServer
