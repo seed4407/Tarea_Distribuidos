@@ -67,8 +67,6 @@ func (s *server) CuposDisponibles(ctx context.Context, in *pb.Cupo) (*pb.Recepci
 	log.Printf("%d",limite_inferior)
 	log.Printf("%d",limite_superior)
 	log.Printf("%d",numeroAleatorio)
-	
-	serverID := "server-1"
 
 	log.Printf(in.GetCupos())
 	return &pb.Recepcion{Ok:"ok "}, nil
@@ -118,6 +116,8 @@ func main() {
 
     // Debugger
     fmt.Println("Conexión exitosa a RabbitMQ")
+	
+	serverID := "server-1"
 
 	    // Mensaje a enviar
     message := "Mensaje guardado en cola"
