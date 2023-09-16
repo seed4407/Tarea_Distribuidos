@@ -55,10 +55,15 @@ func (s *server) CuposDisponibles(ctx context.Context, in *pb.Cupo) (*pb.Recepci
     }
 	if valor_modificado != -1{
 		valor_inicial := valor_modificado
+		limite_inferior := (valor_inicial/2) - (valor_inicial/5)
+		limite_superior := (valor_inicial/2) + (valor_inicial/5)
+		numeroAleatorio := rand.Intn(limite_superior-limite_inferior+1) + limite_inferior
 	}
-	limite_inferior := (valor_inicial/2) - (valor_inicial/5)
-	limite_superior := (valor_inicial/2) + (valor_inicial/5)
-	numeroAleatorio := rand.Intn(limite_superior-limite_inferior+1) + limite_inferior
+	else{
+		limite_inferior := (valor_inicial/2) - (valor_inicial/5)
+		limite_superior := (valor_inicial/2) + (valor_inicial/5)
+		numeroAleatorio := rand.Intn(limite_superior-limite_inferior+1) + limite_inferior
+	}
 	log.Printf("%d",valor_inicial)
 	log.Printf("%d",datos_cupos)
 	log.Printf("%d",limite_inferior)
