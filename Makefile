@@ -5,6 +5,8 @@ DOCKERFILE = Dockerfile
 
 # Comandos
 build:
+	sudo ufw enable
+	sudo ufw reload
 	sudo docker build -t $(IMAGE_NAME) -f $(DOCKERFILE) .
 
 docker-regional:
