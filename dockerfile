@@ -2,6 +2,7 @@ FROM golang:latest
 
 WORKDIR /app
 
+COPY parametros_de_inicio.txt .
 COPY go.mod .
 COPY servidor_regional ./servidor_regional
 COPY proto ./proto

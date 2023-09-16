@@ -30,8 +30,8 @@ import (
 	"time"
 	"strconv"
 	"google.golang.org/grpc"
-	pb "github.com/seed4407/Tarea_Distribuidos/proto"
 	"github.com/streadway/amqp"
+	pb "github.com/seed4407/Tarea_Distribuidos/proto"
 )
 
 var (
@@ -47,7 +47,6 @@ var numeroAleatorio int
 var limite_inferior int
 var limite_superior int
 var ch *amqp.Channel
-
 // server is used to implement helloworld.GreeterServer.
 type server struct {
 	pb.UnimplementedServidorRegionalServer
@@ -68,10 +67,11 @@ func (s *server) CuposDisponibles(ctx context.Context, in *pb.Cupo) (*pb.Recepci
 	log.Printf("%d",limite_inferior)
 	log.Printf("%d",limite_superior)
 	log.Printf("%d",numeroAleatorio)
+	
+	serverID := "server-1"
 
-    serverID := "server-1"
-
-	message := "Mensaje a cola rabbit"
+    // Mensaje a enviar
+    message := "Mensaje guardado en cola"
 
     err = ch.Publish(
         "",     // Exchange
@@ -86,6 +86,9 @@ func (s *server) CuposDisponibles(ctx context.Context, in *pb.Cupo) (*pb.Recepci
     if err != nil {
         log.Fatalf("No se pudo publicar el mensaje: %v", err)
     }
+
+    // Debugger
+    fmt.Println("Mensaje publicado exitosamente en la cola 'central-queue'")
 
 	log.Printf(in.GetCupos())
 	return &pb.Recepcion{Ok:"ok "}, nil
@@ -106,7 +109,7 @@ func (s *server) CuposRechazados(ctx context.Context, in *pb.Rechazado) (*pb.Rec
 func main() {
 	rand.Seed(time.Now().UnixNano())
     // Abrir el archivo en modo lectura
-	filePath := "./servidor_regional/parametros_de_inicio.txt"
+	filePath := "/app/parametros_de_inicio.txt"
 
     // Lee el contenido del archivo
     contenido, err := os.ReadFile(filePath)
@@ -116,6 +119,10 @@ func main() {
     }
 
 	valor_inicial,err = strconv.Atoi(string(contenido))
+
+	if valor_inicial >= 0{
+		log.Printf("Inicio exitoso")
+	}
 
 	conn, err := amqp.Dial("amqp://guest:guest@10.6.46.109:5672/")
     if err != nil {
@@ -131,11 +138,7 @@ func main() {
 
     // Debugger
     fmt.Println("Conexión exitosa a RabbitMQ")
-
-	if valor_inicial >= 0{
-		log.Printf("Inicio exitoso")
-	}
-
+	
 	lis, err := net.Listen("tcp", fmt.Sprintf(":%d",*port))
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
