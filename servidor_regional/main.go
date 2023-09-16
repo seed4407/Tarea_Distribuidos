@@ -53,18 +53,12 @@ func (s *server) CuposDisponibles(ctx context.Context, in *pb.Cupo) (*pb.Recepci
 	if err != nil {
         log.Printf("Error %v\n", err)
     }
-	if valor_modificado != -1{
-		valor_inicial := valor_modificado
-		limite_inferior := (valor_inicial/2) - (valor_inicial/5)
-		limite_superior := (valor_inicial/2) + (valor_inicial/5)
-		numeroAleatorio := rand.Intn(limite_superior-limite_inferior+1) + limite_inferior
-	}
-	else{
-		limite_inferior := (valor_inicial/2) - (valor_inicial/5)
-		limite_superior := (valor_inicial/2) + (valor_inicial/5)
-		numeroAleatorio := rand.Intn(limite_superior-limite_inferior+1) + limite_inferior
-	}
-	log.Printf("%d",valor_inicial)
+	valor_modificado := valor_inicial
+	limite_inferior := (valor_modificado/2) - (valor_modificado/5)
+	limite_superior := (valor_modificado/2) + (valor_modificado/5)
+	numeroAleatorio := rand.Intn(limite_superior-limite_inferior+1) + limite_inferior
+
+	log.Printf("%d",valor_modificado)
 	log.Printf("%d",datos_cupos)
 	log.Printf("%d",limite_inferior)
 	log.Printf("%d",limite_superior)
@@ -79,7 +73,7 @@ func (s *server) CuposRechazados(ctx context.Context, in *pb.Rechazado) (*pb.Rec
 	if err != nil {
         log.Printf("Error %v\n", err)
     }
-	valor_modificado := valor_inicial - (numeroAleatorio -  datos_rechazados)
+	valor_inicial := valor_inicial - (numeroAleatorio -  datos_rechazados)
 	log.Printf("%d",datos_rechazados)
 	log.Printf("%d",valor_modificado)
 	log.Printf(in.GetRechazados())
@@ -99,9 +93,8 @@ func main() {
     }
 
 	valor_inicial,err := strconv.Atoi(string(contenido))
-	valor_modificado := -1
 
-	if valor_inicial >= 0 && valor_modificado == -1 {
+	if valor_inicial >= 0{
 		log.Printf("Inicio exitoso")
 	}
 	lis, err := net.Listen("tcp", fmt.Sprintf(":%d",*port))
