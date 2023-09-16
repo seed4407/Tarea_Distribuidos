@@ -28,6 +28,7 @@ import (
     "os"
 	"math/rand"
 	"time"
+	"strconv"
 	"google.golang.org/grpc"
 	pb "github.com/seed4407/Tarea_Distribuidos/proto"
 )
@@ -37,6 +38,7 @@ var (
 )
 
 var datos_cupos int 
+var err error
 var datos_rechazados int 
 var valor_inicial int
 var numeroAleatorio int
@@ -46,24 +48,30 @@ type server struct {
 }
 
 func (s *server) CuposDisponibles(ctx context.Context, in *pb.Cupo) (*pb.Recepcion, error) {
-	datos_cupos = in.GetCupos()
-	limite_inferior := (valor_inicial/2) - valor_inicial*0.2
-	limite_superior := (valor_inicial/2) + valor_inicial*0.2
+	datos_cupos, err = strconv.Atoi(in.GetCupos())
+	if err != nil {
+        log.Printf("Error %v\n", err)
+    }
+	limite_inferior := (valor_inicial/2) - (valor_inicial/5)
+	limite_superior := (valor_inicial/2) + (valor_inicial/5)
 	numeroAleatorio := rand.Intn(limite_superior-limite_inferior+1) + limite_inferior
-	log.Printf(datos_cupos)
-	log.Printf(limite_inferior)
-	log.Printf(limite_superior)
-	log.Printf(numeroAleatorio)
+	log.Printf("%d",datos_cupos)
+	log.Printf("%d",limite_inferior)
+	log.Printf("%d",limite_superior)
+	log.Printf("%d",numeroAleatorio)
 	//enviar a cola asincrona
 	log.Printf(in.GetCupos())
 	return &pb.Recepcion{Ok:"ok "}, nil
 }
 
 func (s *server) CuposRechazados(ctx context.Context, in *pb.Rechazado) (*pb.Recepcion, error) {
-	datos_rechazados := in.GetRechazados()
+	datos_rechazados, err := strconv.Atoi(in.GetRechazados())
+	if err != nil {
+        log.Printf("Error %v\n", err)
+    }
 	valor_inicial := valor_inicial - (numeroAleatorio -  datos_rechazados)
-	log.Printf(datos_rechazados)
-	log.Printf(valor_inicial)
+	log.Printf("%d",datos_rechazados)
+	log.Printf("%d",valor_inicial)
 	log.Printf(in.GetRechazados())
 	return &pb.Recepcion{Ok:"ok"}, nil
 }
@@ -71,23 +79,15 @@ func (s *server) CuposRechazados(ctx context.Context, in *pb.Rechazado) (*pb.Rec
 func main() {
 	rand.Seed(time.Now().UnixNano())
     // Abrir el archivo en modo lectura
-    archivo, err := os.Open("./servidor_regional/parametros_de_inicio.txt")
+	filePath := "./servidor_regional/parametros_de_inicio.txt"
+
+    // Lee el contenido del archivo
+    contenido, err := os.ReadFile(filePath)
     if err != nil {
-        fmt.Println("Error al abrir el archivo:", err)
+        fmt.Printf("Error al leer el archivo: %v\n", err)
         return
     }
-    defer archivo.Close()
-
-    // Leer el contenido del archivo
-    buffer := make([]byte, 1024)
-    for {
-        n, err := archivo.Read(buffer)
-        if err != nil {
-            break
-        }
-		valor_inicial :=int(buffer[:n])
-    }
-
+	valor_inicial,err = strconv.Atoi(string(contenido))
 
 	lis, err := net.Listen("tcp", fmt.Sprintf(":%d",*port))
 	if err != nil {
