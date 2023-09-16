@@ -7,7 +7,7 @@ DOCKERFILE = Dockerfile
 build:
 	docker build -t $(IMAGE_NAME) -f $(DOCKERFILE) .
 
-run:
+docker-regional:
 	docker run -p 8080:80 $(CONTAINER_NAME)
 stop:
 	docker stop $(CONTAINER_NAME)

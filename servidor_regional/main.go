@@ -30,7 +30,7 @@ import (
 	"time"
 	"strconv"
 	"google.golang.org/grpc"
-	"github.com/streadway/amqp"
+	// "github.com/streadway/amqp"
 	pb "github.com/seed4407/Tarea_Distribuidos/proto"
 )
 
@@ -46,7 +46,8 @@ var valor_modificado int
 var numeroAleatorio int
 var limite_inferior int
 var limite_superior int
-var ch *amqp.Channel
+var aux string
+// var ch *amqp.Channel
 // server is used to implement helloworld.GreeterServer.
 type server struct {
 	pb.UnimplementedServidorRegionalServer
@@ -62,14 +63,10 @@ func (s *server) CuposDisponibles(ctx context.Context, in *pb.Cupo) (*pb.Recepci
 	limite_superior = (valor_modificado/2) + (valor_modificado/5)
 	numeroAleatorio = rand.Intn(limite_superior-limite_inferior+1) + limite_inferior
 
-	log.Printf("%d",valor_modificado)
-	log.Printf("%d",datos_cupos)
-	log.Printf("%d",limite_inferior)
-	log.Printf("%d",limite_superior)
-	log.Printf("%d",numeroAleatorio)
+	log.Printf("Hay %d personas interesadas en acceder a la beta",numeroAleatorio)
+	aux = strconv.Itoa(numeroAleatorio)
 
-	log.Printf(in.GetCupos())
-	return &pb.Recepcion{Ok:"ok "}, nil
+	return &pb.Recepcion{Ok:aux}, nil
 }
 
 func (s *server) CuposRechazados(ctx context.Context, in *pb.Rechazado) (*pb.Recepcion, error) {
@@ -78,9 +75,8 @@ func (s *server) CuposRechazados(ctx context.Context, in *pb.Rechazado) (*pb.Rec
         log.Printf("Error %v\n", err)
     }
 	valor_inicial = valor_inicial - (numeroAleatorio -  datos_rechazados)
-	log.Printf("%d",datos_rechazados)
-	log.Printf("%d",valor_inicial)
-	log.Printf(in.GetRechazados())
+	log.Printf("Se inscribieron %d personas",numeroAleatorio -  datos_rechazados)
+	log.Printf("Quedan %d personas en espera de cupo",valor_inicial)
 	return &pb.Recepcion{Ok:"ok"}, nil
 }
 
@@ -102,42 +98,42 @@ func main() {
 		log.Printf("Inicio exitoso")
 	}
 
-	conn, err := amqp.Dial("amqp://guest:guest@10.6.46.109:8082/")
-    if err != nil {
-        log.Fatalf("No se pudo conectar a RabbitMQ: %v", err)
-    }
-    defer conn.Close()
+	// conn, err := amqp.Dial("amqp://guest:guest@10.6.46.109:8082/")
+    // if err != nil {
+    //     log.Fatalf("No se pudo conectar a RabbitMQ: %v", err)
+    // }
+    // defer conn.Close()
 
-    ch, err := conn.Channel()
-    if err != nil {
-        log.Fatalf("No se pudo abrir un canal: %v", err)
-    }
-    defer ch.Close()
+    // ch, err := conn.Channel()
+    // if err != nil {
+    //     log.Fatalf("No se pudo abrir un canal: %v", err)
+    // }
+    // defer ch.Close()
 
-    // Debugger
-    fmt.Println("Conexión exitosa a RabbitMQ")
+    // // Debugger
+    // fmt.Println("Conexión exitosa a RabbitMQ")
 	
-	serverID := "server-1"
+	// serverID := "server-1"
 
-	    // Mensaje a enviar
-    message := "Mensaje guardado en cola"
+	//     // Mensaje a enviar
+    // message := "Mensaje guardado en cola"
 
-    err = ch.Publish(
-        "",     // Exchange
-        "centralQueue", // Nombre de la cola
-        false,  // Mandatory
-        false,  // Immediate
-        amqp.Publishing{
-            ContentType: "text/plain",
-            Body:        []byte(message),
-            Headers:     amqp.Table{"server_id": serverID},
-        })
-    if err != nil {
-        log.Fatalf("No se pudo publicar el mensaje: %v", err)
-    }
+    // err = ch.Publish(
+    //     "",     // Exchange
+    //     "centralQueue", // Nombre de la cola
+    //     false,  // Mandatory
+    //     false,  // Immediate
+    //     amqp.Publishing{
+    //         ContentType: "text/plain",
+    //         Body:        []byte(message),
+    //         Headers:     amqp.Table{"server_id": serverID},
+    //     })
+    // if err != nil {
+    //     log.Fatalf("No se pudo publicar el mensaje: %v", err)
+    // }
 
-    // Debugger
-    fmt.Println("Mensaje publicado exitosamente en la cola 'central-queue'")
+    // // Debugger
+    // fmt.Println("Mensaje publicado exitosamente en la cola 'central-queue'")
 	
 	lis, err := net.Listen("tcp", fmt.Sprintf(":%d",*port))
 	if err != nil {

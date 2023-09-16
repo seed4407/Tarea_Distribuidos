@@ -20,7 +20,7 @@ RUN protoc --go_out=./proto --go_opt=paths=import \
 --go-grpc_out=./proto --go-grpc_opt=paths=import \
  ./proto/*.proto
 
-RUN go get github.com/streadway/amqp
+# RUN go get github.com/streadway/amqp
 
 WORKDIR /app/servidor_regional
 
