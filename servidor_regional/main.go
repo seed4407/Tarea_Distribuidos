@@ -26,7 +26,8 @@ import (
 	"log"
 	"net" 
     "os"
-
+	"math/rand"
+	"time"
 	"google.golang.org/grpc"
 	pb "github.com/seed4407/Tarea_Distribuidos/proto"
 )
@@ -35,22 +36,40 @@ var (
 	port = flag.Int("port", 80, "The server port")
 )
 
+var datos_cupos int 
+var datos_rechazados int 
+var valor_inicial int
+var numeroAleatorio int
 // server is used to implement helloworld.GreeterServer.
 type server struct {
 	pb.UnimplementedServidorRegionalServer
 }
 
 func (s *server) CuposDisponibles(ctx context.Context, in *pb.Cupo) (*pb.Recepcion, error) {
+	datos_cupos = in.GetCupos()
+	limite_inferior := (valor_inicial/2) - valor_inicial*0.2
+	limite_superior := (valor_inicial/2) + valor_inicial*0.2
+	numeroAleatorio := rand.Intn(limite_superior-limite_inferior+1) + limite_inferior
+	log.Printf(datos_cupos)
+	log.Printf(limite_inferior)
+	log.Printf(limite_superior)
+	log.Printf(numeroAleatorio)
+	//enviar a cola asincrona
 	log.Printf(in.GetCupos())
 	return &pb.Recepcion{Ok:"ok "}, nil
 }
 
 func (s *server) CuposRechazados(ctx context.Context, in *pb.Rechazado) (*pb.Recepcion, error) {
+	datos_rechazados := in.GetRechazados()
+	valor_inicial := valor_inicial - (numeroAleatorio -  datos_rechazados)
+	log.Printf(datos_rechazados)
+	log.Printf(valor_inicial)
 	log.Printf(in.GetRechazados())
 	return &pb.Recepcion{Ok:"ok"}, nil
 }
 
 func main() {
+	rand.Seed(time.Now().UnixNano())
     // Abrir el archivo en modo lectura
     archivo, err := os.Open("./servidor_regional/parametros_de_inicio.txt")
     if err != nil {
@@ -66,7 +85,7 @@ func main() {
         if err != nil {
             break
         }
-        fmt.Print(string(buffer[:n]))
+		valor_inicial :=int(buffer[:n])
     }
 
 
