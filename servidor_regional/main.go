@@ -61,7 +61,7 @@ func (s *server) CuposDisponibles(ctx context.Context, in *pb.Cupo) (*pb.Recepci
 	valor_modificado = valor_inicial
 	limite_inferior = (valor_modificado/2) - (valor_modificado/5)
 	limite_superior = (valor_modificado/2) + (valor_modificado/5)
-	if(valor_modificado == 0) {
+	if valor_modificado == 0 {
 		numeroAleatorio = 0
 	} else if valor_modificado == 1{
 		numeroAleatorio = 1
